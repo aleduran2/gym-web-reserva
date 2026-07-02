@@ -7,7 +7,17 @@ const { enviarClaseLlena } = require("./email");
 const app         = express();
 const CRON_SECRET = process.env.CRON_SECRET || "";
 
-app.use(cors());
+app.use(cors({
+  origin: (origin, callback) => {
+    // Permitir: sin origin (curl, Render health check), localhost, y dominios de Vercel
+    if (!origin || origin.includes("localhost") || origin.includes("vercel.app") || origin.includes("onrender.com")) {
+      callback(null, true);
+    } else {
+      callback(null, true); // por ahora permitir todo, restringir cuando haya dominio propio
+    }
+  },
+  credentials: true,
+}));
 app.use(express.json());
 
 // ── Health ──────────────────────────────────────────────────────────────────
