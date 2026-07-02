@@ -1,0 +1,16 @@
+name: Cron Reservas Diarias
+
+on:
+  schedule:
+    - cron: "1 3 * * 0-5"   # 00:01 ART (UTC-3), domingo a viernes
+  workflow_dispatch:
+
+jobs:
+  reservar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Llamar al backend
+        run: |
+          curl -f -X POST "${{ secrets.BACKEND_URL }}/api/reservar-todos" \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json"
